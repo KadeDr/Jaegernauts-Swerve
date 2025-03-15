@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     notifier = new Notifier(() -> m_robotContainer.Arm());
+    CameraServer.startAutomaticCapture();
     // m_robotcCamera = new Camera();
     // m_robotcCamera.InitializeCamera();
   }
@@ -95,7 +97,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
-    notifier.startPeriodic(0.1);
+    notifier.startPeriodic(0.01);
   }
 
   /** This function is called periodically during operator control. */

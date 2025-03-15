@@ -8,8 +8,12 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorSubsytem extends SubsystemBase {
     private final ElevatorModule m_elevator = new ElevatorModule(ElevatorConstants.kLeftCANId, ElevatorConstants.kRightCANId, ElevatorConstants.kIntakeCANId);
 
-    public void MoveElevator(double speed) {
-        m_elevator.SetDesiredState(speed);
+    public void MoveElevator(double position) {
+        m_elevator.SetDesiredState(position);
+    }
+
+    public void MoveElevatorToPosition(double position) {
+        m_elevator.SetDesiredPosition(position);
     }
 
     public void SpinElevator(double speed) {
@@ -24,12 +28,32 @@ public class ElevatorSubsytem extends SubsystemBase {
         );
     }
 
-    public Command MoveElevatorCommand(double speed) {
+    public Command MoveElevatorCommand(double position) {
         return run(
             () -> {
-                m_elevator.SetDesiredState(speed);
+                m_elevator.SetDesiredState(position);
             }
         );
+    }
+
+    public void MoveToLevel1Command() {
+        m_elevator.MoveToLevel1();
+    }
+
+    public void MoveToLevel4Command() {
+        m_elevator.MoveToLevel4();
+    }
+
+    public void MoveToLevel3Command() {
+        m_elevator.MoveToLevel3();
+    }
+
+    public void MoveToLevel4AutoCommand() {
+        m_elevator.MoveToLevel4Auto();
+    }
+
+    public void MoveToLevel4Auto2Command() {
+        m_elevator.MoveToLevel4Auto2();
     }
 
     public Command SpinElevatorCommand(double speed) {
@@ -38,6 +62,11 @@ public class ElevatorSubsytem extends SubsystemBase {
                 m_elevator.SetSpinState(speed);
             }
         );
+    }
+
+    @Override
+    public void periodic() {
+        m_elevator.PrintEncoderValues();
     }
 
     // private boolean finished;
@@ -57,6 +86,6 @@ public class ElevatorSubsytem extends SubsystemBase {
     // }
 
     public void ResetElevator() {
-        m_elevator.ResetPosition();
+        m_elevator.ResetEncoders();
     }
 }

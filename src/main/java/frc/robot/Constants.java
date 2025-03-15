@@ -23,14 +23,21 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class ElevatorConstants {
+    public static final double Level4 = 47.5, Level3 = 19, Level1 = 0.5, Level4Auto = 48, Level4Auto2 = 51;
+    
     public static final int kLeftCANId = 9, kRightCANId = 10, kIntakeCANId = 11;
     public static final double kMaxHeightInches = 24.75,
       kGearRatio = 12.0,
       kChurroDiameterInches = 0.5,
       kEncoderRotationsPerInch = 0.16,
+      kPositionFactor = 1,
+      kVelocityFactor = 1,
       kMaxRPM = 5676,
       kMaxSpeedInchesPerSecond = (kMaxRPM / kGearRatio) * kChurroDiameterInches * Math.PI / 60;
   }
+
+
+  
   
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -93,7 +100,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 2;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;

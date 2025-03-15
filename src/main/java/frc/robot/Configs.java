@@ -15,19 +15,21 @@ public final class Configs {
 
                 static {
                         @SuppressWarnings("unused")
-                        double positionFactor = 1 / ElevatorConstants.kEncoderRotationsPerInch;
+                        double positionFactor = 1 / ElevatorConstants.kPositionFactor;
                         @SuppressWarnings("unused")
-                        double velocityFactor = ElevatorConstants.kMaxSpeedInchesPerSecond;
+                        double velocityFactor = ElevatorConstants.kVelocityFactor;
 
                         mainConfig
                                         .smartCurrentLimit(20)
                                         .idleMode(IdleMode.kBrake);
-                        // mainConfig.absoluteEncoder
-                        // .positionConversionFactor(positionFactor)
-                        // .velocityConversionFactor(velocityFactor);
-                        // mainConfig.closedLoop
-                        // .pid(0.5, 0.0001, 1)
-                        // .outputRange(0, 1);
+                        mainConfig.absoluteEncoder
+                                        .positionConversionFactor(ElevatorConstants.kEncoderRotationsPerInch)
+                                        .velocityConversionFactor(ElevatorConstants.kMaxSpeedInchesPerSecond);
+                        mainConfig.closedLoop
+                                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                        .pid(0.15 , 0, 0)
+                                        .velocityFF(1/473)
+                                        .outputRange(-0.9, 0.9);
 
                         invertedConfig
                                         .apply(mainConfig)

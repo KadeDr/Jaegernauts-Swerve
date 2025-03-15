@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -9,6 +10,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Configs;
+import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorModule {
     private final SparkMax m_leftSpark, m_rightSpark, m_spinSpark;
@@ -24,7 +26,7 @@ public class ElevatorModule {
 
         m_leftEncoder = m_leftSpark.getEncoder();
         m_rightEncoder = m_rightSpark.getEncoder();
-
+        
         m_leftCLC = m_leftSpark.getClosedLoopController();
         m_rightCLC = m_rightSpark.getClosedLoopController();
 
@@ -36,26 +38,56 @@ public class ElevatorModule {
         m_desiredState.rightPosition = m_rightEncoder.getPosition();
     }
 
-    public ElevatorModuleState GetPosition() {
-        return m_desiredState;
+    public void PrintEncoderValues() {
+        System.out.println("Left Encoder Position: " + m_leftEncoder.getPosition());
+        System.out.println("Right Encoder Position: " + m_rightEncoder.getPosition());
     }
 
+    public ElevatorModuleState GetPosition() {
+        return new ElevatorModuleState(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+    }
+
+    public void SetDesiredPosition(double position) {
+        m_leftCLC.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+   }
+
     public void SetDesiredState(double speed) {
-        System.out.println("Moving");
-        System.out.println(speed);
-       // m_leftCLC.setReference(speed, ControlType.kPosition);
-       // m_rightCLC.setReference(speed, ControlType.kPosition);
          m_leftSpark.set(speed);
          m_rightSpark.set(speed);
-        System.out.println(m_leftSpark.get());
     }
 
     public void SetSpinState(double speed) {
         m_spinSpark.set(speed);
     }
 
-    public void ResetPosition() {
-        m_leftCLC.setReference(0, ControlType.kPosition);
-        m_rightCLC.setReference(0, ControlType.kPosition);
+    public void MoveToLevel1() {
+        m_leftCLC.setReference(ElevatorConstants.Level1, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level1, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void MoveToLevel4() {
+        m_leftCLC.setReference(ElevatorConstants.Level4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void MoveToLevel3() {
+        m_leftCLC.setReference(ElevatorConstants.Level3, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level3, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void MoveToLevel4Auto() {
+        m_leftCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void MoveToLevel4Auto2() {
+        m_leftCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+
+    public void ResetEncoders() {
+        m_leftEncoder.setPosition(0);
+        m_rightEncoder.setPosition(0);
     }
 }
