@@ -22,8 +22,17 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class IntakeConstants {
+    public static final int kCANId = 13;
+public static final double kGearRatio = 1.0 / 60.0,
+    kChurroDiameterInches = 0.5,
+    kMaxRPM = 5676,
+    kPositionFactor = (2 * Math.PI) * kGearRatio,  // 0.5236 rad/motor rotation
+    kVelocityFactor = (2 * Math.PI / 60) * kGearRatio; // 0.00872 rad/s per RPM
+  }
+
   public static final class ElevatorConstants {
-    public static final double Level4 = 47.5, Level3 = 19, Level1 = 0.5, Level4Auto = 48, Level4Auto2 = 51;
+    public static final double Level4 = 47, Level3 = 19, Level1 = 0.5, Level4Auto = 49, Level4Auto2 = 51;
     
     public static final int kLeftCANId = 9, kRightCANId = 10, kIntakeCANId = 11;
     public static final double kMaxHeightInches = 24.75,
@@ -36,9 +45,6 @@ public final class Constants {
       kMaxSpeedInchesPerSecond = (kMaxRPM / kGearRatio) * kChurroDiameterInches * Math.PI / 60;
   }
 
-
-  
-  
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -61,6 +67,17 @@ public final class Constants {
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
+
+    // // SPARK MAX CAN IDs (Stone Bot)
+    // public static final int kFrontLeftDrivingCanId = 2;
+    // public static final int kRearLeftDrivingCanId = 4;
+    // public static final int kFrontRightDrivingCanId = 8;
+    // public static final int kRearRightDrivingCanId = 6;
+
+    // public static final int kFrontLeftTurningCanId = 1;
+    // public static final int kRearLeftTurningCanId = 3;
+    // public static final int kFrontRightTurningCanId = 7;
+    // public static final int kRearRightTurningCanId = 5;
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 3;
@@ -100,8 +117,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 

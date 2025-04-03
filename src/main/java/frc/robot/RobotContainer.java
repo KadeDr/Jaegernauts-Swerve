@@ -10,10 +10,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -21,8 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.DealgaefySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsytem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MainCamera;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,13 +51,20 @@ import com.pathplanner.lib.auto.NamedCommands;
 public class RobotContainer {
   // Vars
   boolean usingManual = false;
+  boolean xFalse = true;
+  boolean bFalse = true;
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ElevatorSubsytem m_robotElevator = new ElevatorSubsytem();
+  private final ClimbSubsystem m_robotClimb = new ClimbSubsystem();
+  private final MainCamera m_robotCamera = new MainCamera();
+  private final IntakeSubsystem m_robotIntake = new IntakeSubsystem();
+  private final DealgaefySubsystem m_robotDealgaefy = new DealgaefySubsystem();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_driverCommandController = new CommandXboxController(OIConstants.kDriverControllerPort);
   XboxController m_armController = new XboxController(OIConstants.kArmControllerPort);
   CommandXboxController m_armCommandController = new CommandXboxController(OIConstants.kArmControllerPort);
 
@@ -112,10 +125,10 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(-m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(-m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                false),
+                true),
             m_robotDrive));
   }
 
@@ -174,12 +187,45 @@ public class RobotContainer {
     // new Trigger(() -> m_armController.getPOV() == 0)
     // .onTrue(m_robotElevator.MoveToLevel4Command());
 
-    m_armCommandController.povUp().onTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel4Command()));
-    m_armCommandController.povRight().onTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel3Command()));
-    m_armCommandController.povDown().onTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel1Command()));
+    m_armCommandController.povUp().toggleOnTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel4Command()));
+    m_armCommandController.povRight().toggleOnTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel3Command()));
+    m_armCommandController.povDown().toggleOnTrue(new InstantCommand(() -> m_robotElevator.MoveToLevel1Command()));
+    m_armCommandController.x().whileTrue(new InstantCommand(() -> m_robotDealgaefy.setDesiredState(0.8)));
+    m_armCommandController.b().whileTrue(new InstantCommand(() -> m_robotDealgaefy.setDesiredState(-0.8)));
+    m_armCommandController.x().onFalse(new InstantCommand(() -> m_robotDealgaefy.setDesiredState(0)));
+    m_armCommandController.b().onFalse(new InstantCommand(() -> m_robotDealgaefy.setDesiredState(0)));
 
-    // m_armController.getPOV(0).onTrue(m_robotElevator.MoveToLevel4Command());
+    m_driverCommandController.leftBumper().whileTrue(new InstantCommand(() -> m_robotClimb.MoveClimbCommand1(0.4)));
+    m_driverCommandController.leftTrigger().whileTrue(new InstantCommand(() -> m_robotClimb.MoveClimbCommand1(-0.4)));
+    m_driverCommandController.leftBumper().onFalse(new InstantCommand(() -> m_robotClimb.MoveClimbCommand1(0)));
+    m_driverCommandController.leftTrigger().onFalse(new InstantCommand(() -> m_robotClimb.MoveClimbCommand1(0)));
+    m_driverCommandController.povUp().whileTrue(new InstantCommand(() -> m_robotClimb.MoveClimbCommand2(0.1)));
+    m_driverCommandController.povDown().whileTrue(new InstantCommand(() -> m_robotClimb.MoveClimbCommand2(-0.4)));
+    m_driverCommandController.povUp().onFalse(new InstantCommand(() -> m_robotClimb.MoveClimbCommand2(0)));
+    m_driverCommandController.povDown().onFalse(new InstantCommand(() -> m_robotClimb.MoveClimbCommand2(0)));
+    m_driverCommandController.povRight().whileTrue(new InstantCommand(() -> m_robotClimb.MoveClimbCommandBoth(-0.4)));
+    m_driverCommandController.povRight().onFalse(new InstantCommand(() -> m_robotClimb.MoveClimbCommandBoth(0)));
   }
+
+  public void runCameraCommand() {
+    m_robotCamera.CameraTeleopPeriodic(m_driverController.getLeftX());
+  }
+
+  public void startCameraCommand() {
+    m_robotCamera.CameraRobotPeriodic();
+  }
+
+  public void initializeCameraCommand() {
+    m_robotCamera.InitializeCamera();
+  }
+
+  public void initializeField() {
+  }
+
+  // public void getAprilTagsCommand(double forward, double strafe, double
+  // rotation) {
+  // m_robotDrive.drive(forward, strafe, rotation, true);
+  // }
 
   // public Command getAutonomousCommand() {
   // return autoChooser.getSelected();
@@ -199,21 +245,72 @@ public class RobotContainer {
         .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    // Trajectory centerLeftPath = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(2.24, 0, new Rotation2d(0)),
+    //     config);
+
+    // Trajectory centerRightPath = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(2.25, 0, new Rotation2d(0)),
+    //     config);
+
+    Trajectory leftPath = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
+        new Pose2d(3.42, 0, new Rotation2d(0)),
         config);
+
+    // Trajectory rightPath = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3.275, 0, new Rotation2d(0)),
+    //     config);
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
+    // SwerveControllerCommand centerLeftSwerveControllerCommand = new SwerveControllerCommand(
+    //     centerLeftPath,
+    //     m_robotDrive::getPose, // Functional interface to feed supplier
+    //     DriveConstants.kDriveKinematics,
+
+    //     // Position controllers
+    //     new PIDController(AutoConstants.kPXController, 0, 0),
+    //     new PIDController(AutoConstants.kPYController, 0, 0),
+    //     thetaController,
+    //     m_robotDrive::setModuleStates,
+    //     m_robotDrive);
+
+    // SwerveControllerCommand centerRightSwerveControllerCommand = new SwerveControllerCommand(
+    //     centerRightPath,
+    //     m_robotDrive::getPose, // Functional interface to feed supplier
+    //     DriveConstants.kDriveKinematics,
+
+    //     // Position controllers
+    //     new PIDController(AutoConstants.kPXController, 0, 0),
+    //     new PIDController(AutoConstants.kPYController, 0, 0),
+    //     thetaController,
+    //     m_robotDrive::setModuleStates,
+    //     m_robotDrive);
+
+    SwerveControllerCommand leftSwerveControllerCommand = new SwerveControllerCommand(
+        leftPath,
         m_robotDrive::getPose, // Functional interface to feed supplier
         DriveConstants.kDriveKinematics,
 
@@ -224,14 +321,29 @@ public class RobotContainer {
         m_robotDrive::setModuleStates,
         m_robotDrive);
 
+    // SwerveControllerCommand rightSwerveControllerCommand = new SwerveControllerCommand(
+    //     rightPath,
+    //     m_robotDrive::getPose, // Functional interface to feed supplier
+    //     DriveConstants.kDriveKinematics,
+
+    //     // Position controllers
+    //     new PIDController(AutoConstants.kPXController, 0, 0),
+    //     new PIDController(AutoConstants.kPYController, 0, 0),
+    //     thetaController,
+    //     m_robotDrive::setModuleStates,
+    //     m_robotDrive);
+
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    m_robotDrive.resetOdometry(leftPath.getInitialPose());
+
+    m_robotDrive.initialize(leftPath);
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(
-        () -> m_robotDrive.drive(0, 0, 0, false)).andThen(
+    return leftSwerveControllerCommand.andThen(
+        () -> m_robotDrive.drive(0, 0, 0, false))
+        .andThen(
             Commands.parallel(
-                new InstantCommand(() -> m_robotElevator.MoveToLevel4AutoCommand()),
+                new InstantCommand(() -> m_robotElevator.MoveToLevel4Command()),
                 Commands.waitSeconds(2)))
         .andThen(
             Commands.parallel(new InstantCommand(
@@ -240,6 +352,6 @@ public class RobotContainer {
         .andThen(
             () -> m_robotElevator.SpinElevator(0))
         .andThen(
-            () -> m_robotElevator.MoveToLevel4Auto2Command());
+            () -> m_robotElevator.MoveToLevel4AutoCommand());
   }
 }

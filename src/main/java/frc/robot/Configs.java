@@ -1,13 +1,68 @@
 package frc.robot;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
+        public static final class ClimbConfig {
+                public static final SparkMaxConfig mainConfig = new SparkMaxConfig();
+                public static final SparkMaxConfig invertedConfig = new SparkMaxConfig();
+
+                static {
+                        mainConfig
+                                        .smartCurrentLimit(20)
+                                        .inverted(false)
+                                        .idleMode(IdleMode.kBrake);
+
+                        invertedConfig
+                                        .apply(mainConfig)
+                                        .inverted(true);
+                }
+        }
+
+        public static final class DealgaefyConfig {
+                public static final SparkMaxConfig mainConfig = new SparkMaxConfig();
+
+                static {
+                        mainConfig
+                                        .smartCurrentLimit(20)
+                                        .inverted(true)
+                                        .idleMode(IdleMode.kBrake);
+                }
+        }
+
+        public static final class IntakeConfigs {
+                public static final SparkMaxConfig mainConfig = new SparkMaxConfig();
+                public static final MAXMotionConfig maxConfig = new MAXMotionConfig();
+
+                static {
+                        mainConfig
+                                        .smartCurrentLimit(20)
+                                        .idleMode(IdleMode.kBrake);
+                        mainConfig.encoder
+                                        .positionConversionFactor(IntakeConstants.kPositionFactor)
+                                        .velocityConversionFactor(IntakeConstants.kVelocityFactor);
+                        mainConfig.closedLoop
+                                        .apply(maxConfig)
+                                        .pid(2, 0, 0)
+                                        .velocityFF(1 / 473)
+                                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                        .outputRange(-1, 1);
+
+                        maxConfig
+                                        .maxVelocity(IntakeConstants.kVelocityFactor)
+                                        .maxAcceleration(IntakeConstants.kVelocityFactor);
+
+                }
+        }
+
         public static final class ElevatorModule {
                 public static final SparkMaxConfig mainConfig = new SparkMaxConfig();
                 public static final SparkMaxConfig invertedConfig = new SparkMaxConfig();
@@ -17,7 +72,7 @@ public final class Configs {
                         @SuppressWarnings("unused")
                         double positionFactor = 1 / ElevatorConstants.kPositionFactor;
                         @SuppressWarnings("unused")
-                        double velocityFactor = ElevatorConstants.kVelocityFactor;
+                        double velocityFactor = 3;
 
                         mainConfig
                                         .smartCurrentLimit(20)
@@ -27,9 +82,9 @@ public final class Configs {
                                         .velocityConversionFactor(ElevatorConstants.kMaxSpeedInchesPerSecond);
                         mainConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(0.15 , 0, 0)
-                                        .velocityFF(1/473)
-                                        .outputRange(-0.9, 0.9);
+                                        .pid(0.15, 0, 0)
+                                        .velocityFF(1 / 473)
+                                        .outputRange(-1, 1);
 
                         invertedConfig
                                         .apply(mainConfig)

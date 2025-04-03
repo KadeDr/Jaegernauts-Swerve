@@ -38,13 +38,12 @@ public class ElevatorModule {
         m_desiredState.rightPosition = m_rightEncoder.getPosition();
     }
 
-    public void PrintEncoderValues() {
-        System.out.println("Left Encoder Position: " + m_leftEncoder.getPosition());
-        System.out.println("Right Encoder Position: " + m_rightEncoder.getPosition());
-    }
-
     public ElevatorModuleState GetPosition() {
         return new ElevatorModuleState(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+    }
+
+    public double getPosition() {
+        return m_leftEncoder.getPosition();
     }
 
     public void SetDesiredPosition(double position) {

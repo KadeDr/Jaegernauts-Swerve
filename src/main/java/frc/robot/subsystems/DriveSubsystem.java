@@ -16,11 +16,15 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,6 +53,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The robot's Gyro
   private final JaegernautsNavXGyro m_gyro = JaegernautsNavXGyro.getInstance();
+
+  private final Field2d m_field = new Field2d();
+
+  public void initialize(Trajectory trajectory) {
+    SmartDashboard.putData("Field", m_field);
+    m_field.getObject("traj").setTrajectory(trajectory);
+    setOdymetry(9.51);
+  }
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -104,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Update the odometry in the periodic block
     SmartDashboard.putNumber("Gyro Angle", m_gyro.getAngle());
     SmartDashboard.putNumber("Odyometry Angle", m_odometry.getPoseMeters().getRotation().getDegrees());
+    m_field.setRobotPose(getPose());
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
@@ -112,6 +125,13 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+  }
+
+  public void setOdymetry(double pos) {
+    m_frontLeft.setPosition(pos);
+    m_frontRight.setPosition(pos);
+    m_rearLeft.setPosition(pos);
+    m_rearRight.setPosition(pos);
   }
 
   public ChassisSpeeds getChassisSpeeds() {

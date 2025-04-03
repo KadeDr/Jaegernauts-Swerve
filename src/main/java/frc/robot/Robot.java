@@ -7,8 +7,11 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   
-  // private Camera m_robotcCamera;
   private RobotContainer m_robotContainer;
 
   private Notifier notifier;
@@ -34,9 +36,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     notifier = new Notifier(() -> m_robotContainer.Arm());
-    CameraServer.startAutomaticCapture();
-    // m_robotcCamera = new Camera();
-    // m_robotcCamera.InitializeCamera();
+    // CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -53,7 +53,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run(); 
-    // m_robotcCamera.CameraRobotPeriodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

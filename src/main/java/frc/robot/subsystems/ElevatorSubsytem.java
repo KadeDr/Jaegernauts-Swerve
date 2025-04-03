@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorModule;
@@ -7,6 +8,11 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsytem extends SubsystemBase {
     private final ElevatorModule m_elevator = new ElevatorModule(ElevatorConstants.kLeftCANId, ElevatorConstants.kRightCANId, ElevatorConstants.kIntakeCANId);
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Elevator Position", m_elevator.getPosition());
+    }
 
     public void MoveElevator(double position) {
         m_elevator.SetDesiredState(position);
@@ -62,11 +68,6 @@ public class ElevatorSubsytem extends SubsystemBase {
                 m_elevator.SetSpinState(speed);
             }
         );
-    }
-
-    @Override
-    public void periodic() {
-        m_elevator.PrintEncoderValues();
     }
 
     // private boolean finished;
