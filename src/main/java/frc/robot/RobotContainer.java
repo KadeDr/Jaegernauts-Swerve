@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryParameterizer.TrajectoryGenerationException;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Auto.AutoChooser;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DealgaefySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -41,6 +43,7 @@ import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -48,7 +51,7 @@ import com.pathplanner.lib.auto.NamedCommands;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer {  
   // Vars
   boolean usingManual = false;
   boolean xFalse = true;
@@ -111,6 +114,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake", getIntakeCommand());
     NamedCommands.registerCommand("raise", getRaiseElevatorCommand());
     NamedCommands.registerCommand("score without raise", getScoreWithoutRaiseCommand());
+
+    NamedCommands.registerCommand("New-CenterLeft", getAutonomousCommand());
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -228,21 +233,38 @@ public class RobotContainer {
   // }
 
   // public Command getAutonomousCommand() {
-  // return autoChooser.getSelected();
+  //   return autoChooser.getSelected();
   // }
+
+  // public Command getAutonomousCommand() {
+  //   return new PathPlannerAuto("New-CenterLeft")
+  // }
+
+  public Command getAutonomousCommand() {
+    AutoChooser autoChooser = new AutoChooser(m_robotDrive, m_robotElevator);
+    return autoChooser.getAutonomousCommand();
+    
+    // try {
+    //   PathPlannerPath path100 = PathPlannerPath.fromPathFile("Path100");
+    //   return AutoBuilder.followPath(path100);
+    // } catch (Exception e) {
+    //   DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    //   return Commands.none();
+    // }
+  }
 
   // /**
   // * Use this to pass the autonomous command to the main {@link Robot} class.
   // *
   // * @return the command to run in autonomous
   // */
-  public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+  // public Command getAutonomousCommand() {
+  //   // Create config for trajectory
+  //   TrajectoryConfig config = new TrajectoryConfig(
+  //       AutoConstants.kMaxSpeedMetersPerSecond,
+  //       AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+  //       // Add kinematics to ensure max speed is actually obeyed
+  //       .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
     // Trajectory centerLeftPath = TrajectoryGenerator.generateTrajectory(
@@ -263,14 +285,14 @@ public class RobotContainer {
     //     new Pose2d(2.25, 0, new Rotation2d(0)),
     //     config);
 
-    Trajectory leftPath = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3.42, 0, new Rotation2d(0)),
-        config);
+    // Trajectory leftPath = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3.42, 0, new Rotation2d(0)),
+    //     config);
 
     // Trajectory rightPath = TrajectoryGenerator.generateTrajectory(
     //     // Start at the origin facing the +X direction
@@ -279,11 +301,11 @@ public class RobotContainer {
     //     List.of(),
     //     // End 3 meters straight ahead of where we started, facing forward
     //     new Pose2d(3.275, 0, new Rotation2d(0)),
-    //     config);
+    // //     config);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // var thetaController = new ProfiledPIDController(
+    //     AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     // SwerveControllerCommand centerLeftSwerveControllerCommand = new SwerveControllerCommand(
     //     centerLeftPath,
@@ -309,17 +331,17 @@ public class RobotContainer {
     //     m_robotDrive::setModuleStates,
     //     m_robotDrive);
 
-    SwerveControllerCommand leftSwerveControllerCommand = new SwerveControllerCommand(
-        leftPath,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+    // SwerveControllerCommand leftSwerveControllerCommand = new SwerveControllerCommand(
+    //     leftPath,
+    //     m_robotDrive::getPose, // Functional interface to feed supplier
+    //     DriveConstants.kDriveKinematics,
 
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+    //     // Position controllers
+    //     new PIDController(AutoConstants.kPXController, 0, 0),
+    //     new PIDController(AutoConstants.kPYController, 0, 0),
+    //     thetaController,
+    //     m_robotDrive::setModuleStates,
+    //     m_robotDrive);
 
     // SwerveControllerCommand rightSwerveControllerCommand = new SwerveControllerCommand(
     //     rightPath,
@@ -333,25 +355,24 @@ public class RobotContainer {
     //     m_robotDrive::setModuleStates,
     //     m_robotDrive);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(leftPath.getInitialPose());
+    // // Reset odometry to the starting pose of the trajectory.
+    // m_robotDrive.resetOdometry(leftPath.getInitialPose());
 
-    m_robotDrive.initialize(leftPath);
+    // m_robotDrive.initialize(leftPath);
 
-    // Run path following command, then stop at the end.
-    return leftSwerveControllerCommand.andThen(
-        () -> m_robotDrive.drive(0, 0, 0, false))
-        .andThen(
-            Commands.parallel(
-                new InstantCommand(() -> m_robotElevator.MoveToLevel4Command()),
-                Commands.waitSeconds(2)))
-        .andThen(
-            Commands.parallel(new InstantCommand(
-                () -> m_robotElevator.SpinElevator(0.1)),
-                Commands.waitSeconds(2)))
-        .andThen(
-            () -> m_robotElevator.SpinElevator(0))
-        .andThen(
-            () -> m_robotElevator.MoveToLevel4AutoCommand());
+    // // Run path following command, then stop at the end.
+    // return leftSwerveControllerCommand.andThen(
+    //     () -> m_robotDrive.drive(0, 0, 0, false))
+    //     .andThen(
+    //         Commands.parallel(
+    //             new InstantCommand(() -> m_robotElevator.MoveToLevel4Command()),
+    //             Commands.waitSeconds(2)))
+    //     .andThen(
+    //         Commands.parallel(new InstantCommand(
+    //             () -> m_robotElevator.SpinElevator(0.1)),
+    //             Commands.waitSeconds(2)))
+    //     .andThen(
+    //         () -> m_robotElevator.SpinElevator(0))
+    //     .andThen(
+    //         () -> m_robotElevator.MoveToLevel4AutoCommand());
   }
-}
