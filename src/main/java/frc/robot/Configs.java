@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ElevatorConstants;
@@ -75,16 +76,21 @@ public final class Configs {
                         double velocityFactor = 3;
 
                         mainConfig
-                                        .smartCurrentLimit(20)
+                                        .smartCurrentLimit(80)
                                         .idleMode(IdleMode.kBrake);
                         mainConfig.absoluteEncoder
                                         .positionConversionFactor(ElevatorConstants.kEncoderRotationsPerInch)
                                         .velocityConversionFactor(ElevatorConstants.kMaxSpeedInchesPerSecond);
                         mainConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(0.15, 0, 0)
-                                        .velocityFF(1 / 473)
+                                        .pid(0.15, 0, 0) // P = .15 for not MAXMotion
+                                        // .velocity0FF(1 / 473)/
                                         .outputRange(-1, 1);
+                        mainConfig.closedLoop.maxMotion
+                                        .maxAcceleration(7500)
+                                        .maxVelocity(1000000)
+                                        .allowedClosedLoopError(0.5)
+                                        .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
 
                         invertedConfig
                                         .apply(mainConfig)

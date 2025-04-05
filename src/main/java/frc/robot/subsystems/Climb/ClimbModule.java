@@ -14,8 +14,8 @@ public class ClimbModule {
     public ClimbModule(int canID1, int canID2) {
         spark = new SparkMax(canID1, MotorType.kBrushless);
         spark2 = new SparkMax(canID2, MotorType.kBrushless);
-        spark.configure(ClimbConfig.mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         spark.configure(ClimbConfig.invertedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        spark.configure(ClimbConfig.mainConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void SetDesiredState1(double speed) {

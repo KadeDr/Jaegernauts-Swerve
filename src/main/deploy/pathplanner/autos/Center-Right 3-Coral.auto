@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1b"
+            "pathName": null
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2b"
+            "pathName": null
           }
         },
         {
@@ -57,7 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 3b"
+            "pathName": null
           }
         },
         {
@@ -82,7 +82,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 4b"
+            "pathName": null
           }
         },
         {
@@ -113,7 +113,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 5b"
+            "pathName": null
           }
         },
         {

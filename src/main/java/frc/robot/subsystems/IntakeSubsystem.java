@@ -18,6 +18,20 @@ public class IntakeSubsystem extends SubsystemBase {
         });
     }
 
+    public Command raiseIntake() {
+        return Commands.sequence(
+                setDesiredStateCommand(new Rotation2d().fromRadians(3.1)).andThen(Commands.waitSeconds(m_waitTime))
+                        .andThen(setDesiredStateCommand(new Rotation2d().fromRadians(5))));
+    }
+
+    public Command lowerIntake() {
+        return Commands.sequence(
+                setDesiredStateCommand(new Rotation2d().fromRadians(3.2)).andThen(Commands.waitSeconds(m_waitTime))
+                        .andThen(setDesiredStateCommand(new Rotation2d().fromRadians(3.1)))
+                        .andThen(Commands.waitSeconds(m_waitTime))
+                        .andThen(setDesiredStateCommand(new Rotation2d().fromRadians(0))));
+    }
+
     public IntakeSubsystem() {
         SmartDashboard.putData("Raise Intake",
                 setDesiredStateCommand(new Rotation2d().fromRadians(3.1)).andThen(Commands.waitSeconds(m_waitTime))

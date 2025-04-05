@@ -32,7 +32,7 @@ public static final double kGearRatio = 1.0 / 60.0,
   }
 
   public static final class ElevatorConstants {
-    public static final double Level4 = 47, Level3 = 19, Level1 = 0.5, Level4Auto = 49, Level4Auto2 = 51;
+    public static final double Level4 = 47, Level3 = 19, Level1 = 0.25, Level4Auto = 49, Level4Auto2 = 51;
     
     public static final int kLeftCANId = 9, kRightCANId = 10, kIntakeCANId = 11;
     public static final double kMaxHeightInches = 24.75,

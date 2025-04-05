@@ -1,22 +1,18 @@
 {
-  "robotWidth": 0.726,
-  "robotLength": 0.838,
+  "robotWidth": 0.775,
+  "robotLength": 0.876,
   "holonomicMode": true,
   "pathFolders": [
-    "Center-Left",
-    "Center-Right",
-    "Left",
-    "Right"
+    "Left 3 Coral",
+    "Right 3 Coral"
   ],
-  "autoFolders": [
-    "Fake Auto"
-  ],
-  "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 2.0,
+  "autoFolders": [],
+  "defaultMaxVel": 4.46,
+  "defaultMaxAccel": 2.25,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 74.088,
+  "robotMass": 40.823,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.048,
@@ -25,18 +21,18 @@
   "driveMotorType": "NEO",
   "driveCurrentLimit": 60.0,
   "wheelCOF": 1.2,
-  "flModuleX": 0.273,
-  "flModuleY": 0.273,
-  "frModuleX": 0.273,
-  "frModuleY": -0.273,
-  "blModuleX": -0.273,
-  "blModuleY": 0.273,
-  "brModuleX": -0.273,
-  "brModuleY": -0.273,
+  "flModuleX": 0.349,
+  "flModuleY": 0.286,
+  "frModuleX": 0.349,
+  "frModuleY": -0.286,
+  "blModuleX": -0.349,
+  "blModuleY": 0.286,
+  "brModuleX": -0.349,
+  "brModuleY": -0.286,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
     "{\"name\":\"Elevator\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.15,\"length\":0.838},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":true}}",
-    "{\"name\":\"Intake\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.2,\"y\":0.15},\"size\":{\"width\":0.1,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+    "{\"name\":\"Intake\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.2,\"y\":-0.15},\"size\":{\"width\":0.1,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
   ]
 }

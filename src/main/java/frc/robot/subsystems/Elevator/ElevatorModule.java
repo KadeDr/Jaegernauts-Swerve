@@ -61,28 +61,28 @@ public class ElevatorModule {
     }
 
     public void MoveToLevel1() {
-        m_leftCLC.setReference(ElevatorConstants.Level1, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        m_rightCLC.setReference(ElevatorConstants.Level1, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_leftCLC.setReference(ElevatorConstants.Level1, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level1, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
     }
 
     public void MoveToLevel4() {
-        m_leftCLC.setReference(ElevatorConstants.Level4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        m_rightCLC.setReference(ElevatorConstants.Level4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_leftCLC.setReference(ElevatorConstants.Level4, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
     }
 
     public void MoveToLevel3() {
-        m_leftCLC.setReference(ElevatorConstants.Level3, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        m_rightCLC.setReference(ElevatorConstants.Level3, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_leftCLC.setReference(ElevatorConstants.Level3, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level3, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
     }
 
     public void MoveToLevel4Auto() {
-        m_leftCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        m_rightCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_leftCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
     }
 
     public void MoveToLevel4Auto2() {
-        m_leftCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        m_rightCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        m_leftCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        m_rightCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
     }
 
     public void ResetEncoders() {
