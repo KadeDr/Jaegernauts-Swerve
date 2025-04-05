@@ -36,6 +36,8 @@ public class AutoChooser {
                 Commands.sequence(lift.SpinElevatorCommand(0.1).withTimeout(0.5), lift.SpinElevatorCommand(0)));
 
         createAutoBuilder(drive);
+
+        autoChooser.addOption("Left 3-Coral", new InstantCommand());
     }
 
     public Command getAutonomousCommand() {
