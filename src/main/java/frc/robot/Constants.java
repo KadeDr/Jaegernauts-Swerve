@@ -23,26 +23,26 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class IntakeConstants {
-    public static final int kCANId = 13;
-public static final double kGearRatio = 1.0 / 60.0,
-    kChurroDiameterInches = 0.5,
-    kMaxRPM = 5676,
-    kPositionFactor = (2 * Math.PI) * kGearRatio,  // 0.5236 rad/motor rotation
-    kVelocityFactor = (2 * Math.PI / 60) * kGearRatio; // 0.00872 rad/s per RPM
+    public static final int kCANId = 12;
+    public static final double kGearRatio = 1.0 / 60.0,
+        kChurroDiameterInches = 0.5,
+        kMaxRPM = 5676,
+        kPositionFactor = (2 * Math.PI) * kGearRatio, // 0.5236 rad/motor rotation
+        kVelocityFactor = (2 * Math.PI / 60) * kGearRatio; // 0.00872 rad/s per RPM
   }
 
   public static final class ElevatorConstants {
     public static final double Level4 = 47, Level3 = 19, Level1 = 0.25, Level4Auto = 49, Level4Auto2 = 51;
-    
+
     public static final int kLeftCANId = 9, kRightCANId = 10, kIntakeCANId = 11;
     public static final double kMaxHeightInches = 24.75,
-      kGearRatio = 12.0,
-      kChurroDiameterInches = 0.5,
-      kEncoderRotationsPerInch = 0.16,
-      kPositionFactor = 1,
-      kVelocityFactor = 1,
-      kMaxRPM = 5676,
-      kMaxSpeedInchesPerSecond = (kMaxRPM / kGearRatio) * kChurroDiameterInches * Math.PI / 60;
+        kGearRatio = 12.0,
+        kChurroDiameterInches = 0.5,
+        kEncoderRotationsPerInch = 0.16,
+        kPositionFactor = 1,
+        kVelocityFactor = 1,
+        kMaxRPM = 5676,
+        kMaxSpeedInchesPerSecond = (kMaxRPM / kGearRatio) * kChurroDiameterInches * Math.PI / 60;
   }
 
   public static final class DriveConstants {
@@ -80,14 +80,14 @@ public static final double kGearRatio = 1.0 / 60.0,
     // public static final int kRearRightTurningCanId = 5;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 3;
+    public static final int kFrontLeftDrivingCanId = 1;
     public static final int kRearLeftDrivingCanId = 5;
-    public static final int kFrontRightDrivingCanId = 1;
+    public static final int kFrontRightDrivingCanId = 3;
     public static final int kRearRightDrivingCanId = 7;
 
-    public static final int kFrontLeftTurningCanId = 4;
+    public static final int kFrontLeftTurningCanId = 2;
     public static final int kRearLeftTurningCanId = 6;
-    public static final int kFrontRightTurningCanId = 2;
+    public static final int kFrontRightTurningCanId = 4;
     public static final int kRearRightTurningCanId = 8;
 
     public static final boolean kGyroReversed = false;

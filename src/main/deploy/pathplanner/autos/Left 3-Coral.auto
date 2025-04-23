@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "L-Start To Reef 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L-Start To Reef 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "raise"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
           }
         },
         {
@@ -15,24 +34,18 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "score"
+                  "pathName": "L-Reef 1 To Source"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.525
+                  "name": "lower"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L-Reef 1 To Source"
           }
         },
         {
@@ -48,7 +61,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -74,28 +87,28 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "score without raise"
+                  "pathName": "L-Reef 2 To Source"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 0.5
+                  "name": "lower"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L-Reef 2 To Source"
           }
         },
         {
@@ -111,7 +124,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -141,15 +154,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "score without raise"
+                  "pathName": "L-Reef 3 to Source"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 0.5
+                  "name": "lower"
                 }
               }
             ]

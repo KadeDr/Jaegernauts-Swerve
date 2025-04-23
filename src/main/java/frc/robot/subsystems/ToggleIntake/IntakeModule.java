@@ -18,7 +18,7 @@ public class IntakeModule {
     private final RelativeEncoder m_encoder;
 
     private IntakeModuleState m_desiredState = new IntakeModuleState(new Rotation2d());
-    
+
     public IntakeModule(int canId) {
         m_spark = new SparkMax(canId, MotorType.kBrushless);
         m_CLC = m_spark.getClosedLoopController();
@@ -27,8 +27,16 @@ public class IntakeModule {
         m_desiredState.angle = new Rotation2d(m_encoder.getPosition());
     }
 
-    public Rotation2d getState() {
-        return new Rotation2d(m_encoder.getPosition());
+    public IntakeModuleState getState() {
+        return new IntakeModuleState(new Rotation2d(m_encoder.getPosition()));
+    }
+
+    public boolean atSetpoint() {
+        if (m_desiredState.angle.getRadians() <= getState().angle.getRadians() + 0.075
+                && m_desiredState.angle.getRadians() >= getState().angle.getRadians() - 0.075) {
+            return true;
+        }
+        return false;
     }
 
     public void SetState(IntakeModuleState desiredState) {

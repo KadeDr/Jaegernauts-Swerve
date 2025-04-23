@@ -42,6 +42,13 @@ public class ElevatorModule {
         return new ElevatorModuleState(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
     }
 
+    public boolean atSetpoint() {
+        if (m_desiredState.leftPosition <= GetPosition().leftPosition + 0.5 && m_desiredState.leftPosition >= GetPosition().leftPosition - 0.5){
+            return true;
+        }
+        return false;
+    }
+
     public double getPosition() {
         return m_leftEncoder.getPosition();
     }
@@ -63,26 +70,36 @@ public class ElevatorModule {
     public void MoveToLevel1() {
         m_leftCLC.setReference(ElevatorConstants.Level1, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         m_rightCLC.setReference(ElevatorConstants.Level1, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+
+        m_desiredState = new ElevatorModuleState(ElevatorConstants.Level1, ElevatorConstants.Level1);
     }
 
     public void MoveToLevel4() {
         m_leftCLC.setReference(ElevatorConstants.Level4, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         m_rightCLC.setReference(ElevatorConstants.Level4, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        
+        m_desiredState = new ElevatorModuleState(ElevatorConstants.Level4, ElevatorConstants.Level4);
     }
 
     public void MoveToLevel3() {
         m_leftCLC.setReference(ElevatorConstants.Level3, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         m_rightCLC.setReference(ElevatorConstants.Level3, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        
+        m_desiredState = new ElevatorModuleState(ElevatorConstants.Level3, ElevatorConstants.Level3);
     }
 
     public void MoveToLevel4Auto() {
         m_leftCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         m_rightCLC.setReference(ElevatorConstants.Level4Auto, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        
+        m_desiredState = new ElevatorModuleState(ElevatorConstants.Level4Auto, ElevatorConstants.Level4Auto);
     }
 
     public void MoveToLevel4Auto2() {
         m_leftCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
         m_rightCLC.setReference(ElevatorConstants.Level4Auto2, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        
+        m_desiredState = new ElevatorModuleState(ElevatorConstants.Level4Auto2, ElevatorConstants.Level4Auto2);
     }
 
     public void ResetEncoders() {

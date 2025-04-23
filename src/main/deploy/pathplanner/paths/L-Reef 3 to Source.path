@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.729,
-        "y": 7.381001655629138
+        "x": 3.545,
+        "y": 4.991121688741721
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8750895694270424,
-        "y": 7.165158965901491
+        "x": 2.465424863745933,
+        "y": 6.414788370594246
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5448675496688735,
-        "y": 4.991121688741721
+        "x": 1.729,
+        "y": 7.381
       },
       "prevControl": {
-        "x": 3.407202898142491,
-        "y": 5.199804327502399
+        "x": 1.5768680323274047,
+        "y": 7.579383125320841
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Left 3 Coral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.5
+    "rotation": 119.5
   },
   "useDefaultConstraints": true
 }

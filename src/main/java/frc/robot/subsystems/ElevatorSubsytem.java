@@ -70,6 +70,10 @@ public class ElevatorSubsytem extends SubsystemBase {
         );
     }
 
+    public boolean atSetpoint() {
+        return m_elevator.atSetpoint();
+    }
+
     // private boolean finished;
 
     // public void ElevatorAuto() {

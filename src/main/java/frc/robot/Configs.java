@@ -84,11 +84,11 @@ public final class Configs {
                         mainConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                         .pid(0.15, 0, 0) // P = .15 for not MAXMotion
-                                        // .velocity0FF(1 / 473)/
+                                        .velocityFF(1 / 473)
                                         .outputRange(-1, 1);
                         mainConfig.closedLoop.maxMotion
                                         .maxAcceleration(7500)
-                                        .maxVelocity(1000000)
+                                        .maxVelocity(2000000)
                                         .allowedClosedLoopError(0.5)
                                         .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal);
 

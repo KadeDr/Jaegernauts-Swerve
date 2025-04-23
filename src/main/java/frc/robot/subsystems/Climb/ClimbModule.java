@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Configs.ClimbConfig;
 
 public class ClimbModule {
@@ -30,4 +31,6 @@ public class ClimbModule {
         spark.set(speed);
         spark2.set(speed);
     }
+
+    
 }
