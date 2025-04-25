@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L-Start To Reef 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "score"
+            "pathName": "Straight"
           }
         }
       ]
