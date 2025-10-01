@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -95,18 +96,20 @@ public class MAXSwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState) {
+  public void setDesiredState(SwerveModuleState desiredState, double feedForwardVoltage) {
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
+    
+    
     // Optimize the reference state to avoid spinning further than 90 degrees.
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
-    m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+    m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedForwardVoltage);
+    m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition, ClosedLoopSlot.kSlot0, feedForwardVoltage);
 
     m_desiredState = desiredState;
   }

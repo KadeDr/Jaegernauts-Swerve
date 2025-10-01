@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -67,6 +68,9 @@ public final class Constants {
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
+
+    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.2, 2.0, 0.3);
+    public static final SimpleMotorFeedforward kTurnFeedforward = new SimpleMotorFeedforward(0.1, 1.5, 0.2);
 
     // // SPARK MAX CAN IDs (Stone Bot)
     // public static final int kFrontLeftDrivingCanId = 2;
