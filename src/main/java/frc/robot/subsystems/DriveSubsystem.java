@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -90,14 +91,13 @@ public class DriveSubsystem extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond,
-            speeds.omegaRadiansPerSecond, false), // Method that will drive the robot given ROBOT RELATIVE
-                                                  // ChassisSpeeds. Also optionally outputs individual module
-                                                  // feedforwards
+        this::driveWithFeedforwards,
+        // ChassisSpeeds. Also optionally outputs individual module
+        // feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
             new PIDConstants(8.3, 0.0, 0.125), // Translation PID constants
-            new PIDConstants(0, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(8.3, 0.0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {
@@ -221,14 +221,54 @@ public class DriveSubsystem extends SubsystemBase {
         DriveConstants.kDriveFeedforward.calculate(swerveModuleStates[3].speedMetersPerSecond));
   }
 
+  public void driveWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards ff) {
+    SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+
+    double[] feedforwards = ff.linearForcesNewtons();
+
+    // Now you can see each module’s raw force
+    SmartDashboard.putNumber("FF Front Left (N)", feedforwards[0]);
+    SmartDashboard.putNumber("FF Front Right (N)", feedforwards[1]);
+    SmartDashboard.putNumber("FF Rear Left (N)", feedforwards[2]);
+    SmartDashboard.putNumber("FF Rear Right (N)", feedforwards[3]);
+
+    // --- APPLY YOUR OWN FF (Option A: keep WPILib SimpleMotorFeedforward) ---
+    m_frontLeft.setDesiredState(
+        swerveModuleStates[0],
+        DriveConstants.kDriveFeedforward.calculate(swerveModuleStates[0].speedMetersPerSecond));
+
+    m_frontRight.setDesiredState(
+        swerveModuleStates[1],
+        DriveConstants.kDriveFeedforward.calculate(swerveModuleStates[1].speedMetersPerSecond));
+
+    m_rearLeft.setDesiredState(
+        swerveModuleStates[2],
+        DriveConstants.kDriveFeedforward.calculate(swerveModuleStates[2].speedMetersPerSecond));
+
+    m_rearRight.setDesiredState(
+        swerveModuleStates[3],
+        DriveConstants.kDriveFeedforward.calculate(swerveModuleStates[3].speedMetersPerSecond));
+  }
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
   public void setX() {
-    m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    m_frontLeft.setDesiredState(
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        DriveConstants.kDriveFeedforward.calculate(0));
+    m_frontRight.setDesiredState(
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        DriveConstants.kDriveFeedforward.calculate(0));
+    m_rearLeft.setDesiredState(
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        DriveConstants.kDriveFeedforward.calculate(0));
+    m_rearRight.setDesiredState(
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        DriveConstants.kDriveFeedforward.calculate(0));
   }
 
   /**
@@ -237,12 +277,26 @@ public class DriveSubsystem extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
+    // Desaturate wheel speeds so no module exceeds max velocity
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0]);
-    m_frontRight.setDesiredState(desiredStates[1]);
-    m_rearLeft.setDesiredState(desiredStates[2]);
-    m_rearRight.setDesiredState(desiredStates[3]);
+
+    // Apply feedforward per module just like in drive()
+    m_frontLeft.setDesiredState(
+        desiredStates[0],
+        DriveConstants.kDriveFeedforward.calculate(desiredStates[0].speedMetersPerSecond));
+
+    m_frontRight.setDesiredState(
+        desiredStates[1],
+        DriveConstants.kDriveFeedforward.calculate(desiredStates[1].speedMetersPerSecond));
+
+    m_rearLeft.setDesiredState(
+        desiredStates[2],
+        DriveConstants.kDriveFeedforward.calculate(desiredStates[2].speedMetersPerSecond));
+
+    m_rearRight.setDesiredState(
+        desiredStates[3],
+        DriveConstants.kDriveFeedforward.calculate(desiredStates[3].speedMetersPerSecond));
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
